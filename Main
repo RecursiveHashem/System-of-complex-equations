@@ -1,6 +1,4 @@
 
-
-
 class Complex:
 	
 	def __init__(self,r,i):
