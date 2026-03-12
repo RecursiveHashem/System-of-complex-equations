@@ -98,9 +98,10 @@ class expression:
 		self.const = k
 	
 	def __str__(self):
-		if self.coef != Complex(0, 0) or str(self.coef) != "{0}":
-			return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
-		return "{" + str(self.const) + "}"
+		if self.coef == Complex(0, 0) or str(self.coef) == "{0}":
+			return "{" + str(self.const) + "}"
+		return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
+
 
 	def __eq__(self, other):
 		if isinstance(other, expression):
@@ -149,10 +150,12 @@ class expression:
 
 
 z = Complex(0, 1)
-x = Complex(1, 0)
+x = Complex(0, 0)
 
 v = expression("y", x, z)
+u = expression("x", v, 2)
+
 
 print(z**1)
-print(str(v))
+print(u)
 
