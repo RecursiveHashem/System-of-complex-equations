@@ -43,14 +43,14 @@ class Complex:
 			self.imag*=other
 		return self
 	
-	def __truediv__(self,other):
-		if isinstance(other,Complex):
+	def __truediv__(self, other):
+		if isinstance(other, Complex):
 			r = other.real/(other.real**2 + other.imag**2)
 			i =-other.imag/(other.real**2 + other.imag**2)
-			self*= Complex(r,i)
+			self*= Complex(r, i)
 		else:
-			self.real/=other
-			self.imag/=other
+			self.real /= other
+			self.imag /= other
 		return self
 		
 	def abs(self):
@@ -87,44 +87,43 @@ class expression:
 	def __str__(self):
 		return str(self.coef) + str(self.varName) + " + " + str(self.const)
 	
-	def __add__(self,other):
-		if isinstance(other,expression):
+	def __add__(self, other):
+		if isinstance(other, expression):
 			pass
 		else:
 			self.const+=other
 		return self
 		
 		
-	def __sub__(self,other):
-		if isinstance(other,expression):
+	def __sub__(self, other):
+		if isinstance(other, expression):
 			pass
 		else:
-			self.const-=other
+			self.const -= other
 		return self
 	
 
-	def __mul__(self,other):
-		if isinstance(other,expression):
+	def __mul__(self, other):
+		if isinstance(other, expression):
 			pass
 		else:
-			self.const*=other
-			self.coef*=other
+			self.const *= other
+			self.coef *= other
 		return self
 	
-	def __tuediv__(self,other):
-		if isinstance(other,expression):
+	def __truediv__(self, other):
+		if isinstance(other, expression):
 			pass
 		else:
-			self.const/=other
-			self.coef/=other
+			self.const /= other
+			self.coef /= other
 		return self
 
 
-#z = Complex(2,1)
-#x = Complex(0,2)
+# z = Complex(2,1)
+# x = Complex(0,2)
 
 v = expression("y")
 
-print(v)
+print((v+2)/2)
 
-#hohohiho
