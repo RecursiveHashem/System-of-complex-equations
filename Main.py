@@ -123,8 +123,8 @@ class expression:
 #z = Complex(2,1)
 #x = Complex(0,2)
 
-#v = expression("y")
+v = expression("y")
 
-
+print(v)
 
 #hohohiho
