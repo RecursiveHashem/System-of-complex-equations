@@ -3,7 +3,7 @@ import math
 
 class Complex:
 	
-	def __init__(self,r,i):
+	def __init__(self, r, i):
 		self.real = float(r)
 		self.imag = float(i)
 	
@@ -85,7 +85,9 @@ class Complex:
 			return ang + 180
 		else:
 			return ang - 180
-		
+
+	def EffectiveValue(self):
+		return self
 		
 	
 
@@ -97,16 +99,29 @@ class expression:
 		self.varName = name
 		self.coef = c
 		self.const = k
-	
+
+	def EffectiveValue(self):
+		#if isinstance(self.coef, Complex):
+		#	return self if self.coef != Complex(0, 0) else self.const.EffectiveValue()
+		if self.coef.EffectiveValue() == Complex(0, 0):
+			return self.const.EffectiveValue()
+		return self
+
 	def __str__(self):
-		if self.coef == Complex(0, 0) or str(self.coef) == "{0}":
-			return "{" + str(self.const) + "}"
-		return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
+		self = self.EffectiveValue()
+		if isinstance(self, expression):
+			return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
+		return str(self)
+		#if self.coef == Complex(0, 0):  # or str(self.coef) == "{0}":
+		#	return "{" + str(self.const) + "}"
 
 	def __eq__(self, other):
-		if isinstance(other, expression):
+		self = self.EffectiveValue()
+		other = other.EffectiveValue()
+		if isinstance(other, expression) and isinstance(self, expression):
 			return self.coef == other.coef and self.const == other.const and self.varName == self.varName
-		return False
+		return self == other
+	# double check
 	def __ne__(self, other):
 		return not self == other
 	
@@ -150,10 +165,10 @@ class expression:
 z = Complex(0, 1)
 x = Complex(0, 0)
 
-v = expression("y", x, z)
-u = expression("x", v, 2)
+v = expression("y", x, x)
+u = expression("x", v, z)
 
 
-print(z**2)
 print(u)
+print(u==z)
 
