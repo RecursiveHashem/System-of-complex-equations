@@ -63,9 +63,10 @@ class Complex:
 		res = Complex(1, 0)
 		i = -1 if other >= 0 else 1
 		while other:
-			res = self * res
+			res = self * res if i == -1 else res / self
 			other += i
 		return res
+
 	def abs(self):
 		return math.sqrt(self.real**2 + self.imag**2)
 	
@@ -102,7 +103,6 @@ class expression:
 			return "{" + str(self.const) + "}"
 		return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
 
-
 	def __eq__(self, other):
 		if isinstance(other, expression):
 			return self.coef == other.coef and self.const == other.const and self.varName == self.varName
@@ -116,15 +116,13 @@ class expression:
 		else:
 			res = expression(self.varName, self.coef, self.const + other)
 		return res
-		
-		
+
 	def __sub__(self, other):
 		if isinstance(other, expression):
 			pass
 		else:
 			res = expression(self.varName, self.coef, self.const - other)
 		return res
-	
 
 	def __mul__(self, other):
 		if isinstance(other, expression):
@@ -144,7 +142,7 @@ class expression:
 		res = expression(self.varName, 0, 1)
 		i = -1 if other >= 0 else 1
 		while other:
-			res = self * res
+			res = self * res if i == -1 else res / self
 			other += i
 		return res
 
@@ -156,6 +154,6 @@ v = expression("y", x, z)
 u = expression("x", v, 2)
 
 
-print(z**1)
+print(z**2)
 print(u)
 
