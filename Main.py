@@ -3,9 +3,13 @@ import math
 
 class Complex:
 	
-	def __init__(self, r, i):
-		self.real = float(r)
-		self.imag = float(i)
+	def __init__(self, a, b, p):
+		if not p:
+			self.real = float(a)
+			self.imag = float(b)
+		else:
+			self.real = a*round(math.cos(math.radians(b)), 5)
+			self.imag = a*math.sin(math.radians(b))
 	
 	def __str__(self):
 		if not self.imag:
@@ -29,7 +33,7 @@ class Complex:
 			i = self.imag+other.imag
 		else:
 			r = self.real+other
-			i = 0
+			i = self.imag
 		return Complex(r, i)
 	
 	def __sub__(self, other):
@@ -38,7 +42,7 @@ class Complex:
 			i = self.imag-other.imag
 		else:
 			r = self.real-other
-			i = 0
+			i = self.imag
 		return Complex(r, i)
 	
 	def __mul__(self, other):
@@ -60,7 +64,7 @@ class Complex:
 		return res
 
 	def __pow__(self, other):
-		res = Complex(1, 0)
+		res = Complex(1, 0, 0)
 		i = -1 if other >= 0 else 1
 		while other:
 			res = self * res if i == -1 else res / self
@@ -103,7 +107,7 @@ class expression:
 	def EffectiveValue(self):
 		#if isinstance(self.coef, Complex):
 		#	return self if self.coef != Complex(0, 0) else self.const.EffectiveValue()
-		if self.coef.EffectiveValue() == Complex(0, 0):
+		if self.coef.EffectiveValue() == Complex(0, 0, 0):
 			return self.const.EffectiveValue()
 		return self
 
@@ -162,13 +166,13 @@ class expression:
 		return res
 
 
-z = Complex(0, 1)
-x = Complex(0, 0)
-
+z = Complex(0, 1, 0)
+x = Complex(0, 0, 0)
+y = Complex(1, 90, 1)
 v = expression("y", x, x)
 u = expression("x", v, z)
 
 
+print(y)
 print(u)
-print(u==z)
 
