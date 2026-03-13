@@ -19,12 +19,9 @@ class Complex:
 		else:
 			return "( "+ str(self.real)+ " + " + "j"+str(self.imag)+" )"
 
-	def refresh(self):
-		self = self.EffectiveValue()
-		return self
 
 	def __eq__(self, other):
-		if isinstance(other, Complex):
+		if isinstance(refresh(other), Complex):
 			return self.real == other.real and self.imag == other.imag
 		return False
 
@@ -32,7 +29,7 @@ class Complex:
 		return not self == other
 
 	def __add__(self, other):
-		if isinstance(other.refresh(), expression):
+		if isinstance(refresh(other), expression):
 			return other+self
 		if isinstance(other, Complex):
 			r = self.real+other.real
@@ -43,6 +40,8 @@ class Complex:
 		return Complex(r, i, 0)
 	
 	def __sub__(self, other):
+		if isinstance(refresh(other), expression):
+			return -other+self
 		if isinstance(other, Complex):
 			r = self.real-other.real
 			i = self.imag-other.imag
@@ -100,7 +99,9 @@ class Complex:
 		return self
 		
 	
-
+def refresh(self):
+	self = self.EffectiveValue()
+	return self
 
 
 class expression:
@@ -109,6 +110,7 @@ class expression:
 		self.varName = name
 		self.coef = c
 		self.const = k
+		refresh(self)
 
 	def EffectiveValue(self):
 		#if isinstance(self.coef, Complex):
@@ -117,14 +119,11 @@ class expression:
 			return self.const.EffectiveValue()
 		return self
 
-	def refresh(self):
-		self = self.EffectiveValue()
-		return self
 
 	def __str__(self):
 		#if self.coef == Complex(0, 0):  # or str(self.coef) == "{0}":
 		#	return "{" + str(self.const) + "}"
-		self.refresh()
+		self = self.EffectiveValue()
 		if isinstance(self, expression):
 			return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
 		return str(self)
@@ -140,19 +139,17 @@ class expression:
 		return not self == other
 	
 	def __add__(self, other):
-		self.refresh()
-		if isinstance(other.refresh(), expression):
-			pass
-		else:
-			res = expression(self.varName, self.coef, self.const + other)
-		return res
+		if isinstance(refresh(other), expression):
+			if self.varName == other.varName:
+				return expression(self.varName, self.coef + other.coef, self.const + other.const)
+		return expression(self.varName, self.coef, self.const + other)
+
 
 	def __sub__(self, other):
-		if isinstance(other, expression):
-			pass
-		else:
-			res = expression(self.varName, self.coef, self.const - other)
-		return res
+		if isinstance(refresh(other), expression):
+			if self.varName == other.varName:
+				return expression(self.varName, self.coef - other.coef, self.const - other.const)
+		return expression(self.varName, self.coef, self.const - other)
 
 	def __mul__(self, other):
 		if isinstance(other, expression):
@@ -175,7 +172,9 @@ class expression:
 			res = self * res if i == -1 else res / self
 			other += i
 		return res
-
+	def inc(self):
+		self.const += Complex(1,0,0)
+		return self
 
 z = Complex(0, 1, 0)
 x = Complex(0, 0, 0)
@@ -184,6 +183,7 @@ v = expression("y", x, x)
 u = expression("x", v, z)
 
 
-print(y)
+print(u)
+u = u.EffectiveValue()
 print(u)
 
