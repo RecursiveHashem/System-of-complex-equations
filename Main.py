@@ -120,7 +120,7 @@ class expression:
 	
 	def __init__(self, name, c, k):
 		self.varName = name
-		self.coef = c
+		self.coef = c.EffectiveValue()
 		self.const = k.EffectiveValue()
 
 	def EffectiveValue(self):
