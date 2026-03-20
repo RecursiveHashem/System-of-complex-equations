@@ -120,8 +120,9 @@ class expression:
 	
 	def __init__(self, name, c, k):
 		self.varName = name
-		self.coef = c.EffectiveValue()
+		self.coef = c
 		self.const = k.EffectiveValue()
+		self.divider = one
 
 	def EffectiveValue(self):
 		#if isinstance(self.coef, Complex):
@@ -170,7 +171,8 @@ class expression:
 	def __truediv__(self, other):
 		other = other.EffectiveValue()
 		if isinstance(other, expression):
-			res = self*expression(other.varName, -other.coef, other.const)/(other.coef**2 - other.const**2) # WRONG LOGIC
+			res = self+zero
+			res.divider = other * res.divider
 		else:
 			res = expression(self.varName, self.coef / other, self.const / other)
 		return res.EffectiveValue()
@@ -192,6 +194,20 @@ class expression:
 	@staticmethod
 	def constant(c):
 		return expression("shouldn't be seen", zero, c)
+	
+
+class BoxedExpr:
+	
+	def __init__(self, name, c, k):
+		self.expr = expression(name, c, k)
+	
+	def EffectiveValue(self):
+		self.expr = self.expr.EffectiveValue()
+		self.expr.divider = self.expr.divider.EffectiveValue()
+	
+		
+	
+
 
 z = Complex(0, 1, 0)
 x = Complex(0, 0, 0)
