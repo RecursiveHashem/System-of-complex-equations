@@ -1,224 +1,285 @@
-
 import math
+
 
 class Complex:
 
-	
-	def __init__(self, a, b, p):
-		if not p:
-			self.real = float(a)
-			self.imag = float(b)
-		else:
-			self.real = a*round(math.cos(math.radians(b)), 5)
-			self.imag = a*math.sin(math.radians(b))
-	
-	def __str__(self):
-		if not self.imag:
-			return str(self.real)
-		elif not self.real:
-			return "j"+str(self.imag)
-		else:
-			return "( "+ str(self.real)+ " + " + "j"+str(self.imag)+" )"
+    def __init__(self, a, b, p):
+        if not p:
+            self.real = float(a)
+            self.imag = float(b)
+        else:
+            self.real = a * round(math.cos(math.radians(b)), 5)
+            self.imag = a * math.sin(math.radians(b))
 
-	def __neg__(self):
-		return Complex(-self.real, -self.imag, 0)
-	def __eq__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, Complex):
-			return self.real == other.real and self.imag == other.imag
-		return False
+    def __str__(self):
+        if not self.imag:
+            return str(self.real)
+        elif not self.real:
+            return "j" + str(self.imag)
+        else:
+            return "( " + str(self.real) + " + " + "j" + str(self.imag) + " )"
 
-	def __ne__(self, other):
-		return not self == other
+    def __neg__(self):
+        return Complex(-self.real, -self.imag, 0)
 
-	def __add__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			return (other + self).EffectiveValue()
-		if isinstance(other, Complex):
-			r = self.real+other.real
-			i = self.imag+other.imag
-		else:
-			r = self.real+other
-			i = self.imag
-		return Complex(r, i, 0)
-	
-	def __sub__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			return (-one*other)+self
-		if isinstance(other, Complex):
-			r = self.real-other.real
-			i = self.imag-other.imag
-		else:
-			r = self.real-other
-			i = self.imag
-		return Complex(r, i, 0)
-	
-	def __mul__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			return other*self
-		if isinstance(other, Complex):
-			r = self.real*other.real - (self.imag*other.imag)
-			i = self.real*other.imag + (self.imag*other.real)
-		else:
-			r = self.real*other
-			i = self.imag*other
-		return Complex(r, i, 0)
-	
-	def __truediv__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			return (expression.constant(self)/other).EffectiveValue() # double check
-		if isinstance(other, Complex):
-			r = other.real/(other.real**2 + other.imag**2)
-			i = -other.imag/(other.real**2 + other.imag**2)
-			res = self * Complex(r, i, 0)
-		else:
-			res = Complex(self.real / other, self.imag / other, 0)
-		return res
+    def __eq__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, Complex):
+            return self.real == other.real and self.imag == other.imag
+        return False
 
-	def __pow__(self, other):
-		res = one
-		i = -1 if other >= 0 else 1
-		while other:
-			res = self * res if i == -1 else res / self
-			other += i
-		return res
+    def __ne__(self, other):
+        return not self == other
 
-	def abs(self):
-		return math.sqrt(self.real**2 + self.imag**2)
-	
-	def quad(self):
-		if self.real >= 0:
-			return 1 if self.imag >= 0 else 4
-		else:
-			return 2 if self.imag >= 0 else 3
-	
-	def angle(self):
-		ang = math.degrees(math.atan(self.imag/self.real))
-		q = self.quad()
-		if q == 1 or q == 4:
-			return ang
-		elif q == 2:
-			return ang + 180
-		else:
-			return ang - 180
+    def __add__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, expression):
+            return (other + self).EffectiveValue()
+        if isinstance(other, Complex):
+            r = self.real + other.real
+            i = self.imag + other.imag
+        else:
+            r = self.real + other
+            i = self.imag
+        return Complex(r, i, 0)
 
-	def EffectiveValue(self):
-		return self
+    def __sub__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, expression):
+            return (-one * other) + self
+        if isinstance(other, Complex):
+            r = self.real - other.real
+            i = self.imag - other.imag
+        else:
+            r = self.real - other
+            i = self.imag
+        return Complex(r, i, 0)
 
-	def compliment(self):
-		return Complex(self.real, -self.imag, 0)
-		
+    def __mul__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, expression):
+            return other * self
+        if isinstance(other, Complex):
+            r = self.real * other.real - (self.imag * other.imag)
+            i = self.real * other.imag + (self.imag * other.real)
+        else:
+            r = self.real * other
+            i = self.imag * other
+        return Complex(r, i, 0)
+
+    def __truediv__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, expression):
+            return (expression.constant(self) / other).EffectiveValue()  # double check
+        if isinstance(other, Complex):
+            r = other.real / (other.real ** 2 + other.imag ** 2)
+            i = -other.imag / (other.real ** 2 + other.imag ** 2)
+            res = self * Complex(r, i, 0)
+        else:
+            res = Complex(self.real / other, self.imag / other, 0)
+        return res
+
+    def __pow__(self, other):
+        res = one
+        i = -1 if other >= 0 else 1
+        while other:
+            res = self * res if i == -1 else res / self
+            other += i
+        return res
+
+    def abs(self):
+        return math.sqrt(self.real ** 2 + self.imag ** 2)
+
+    def quad(self):
+        if self.real >= 0:
+            return 1 if self.imag >= 0 else 4
+        else:
+            return 2 if self.imag >= 0 else 3
+
+    def angle(self):
+        ang = math.degrees(math.atan(self.imag / self.real))
+        q = self.quad()
+        if q == 1 or q == 4:
+            return ang
+        elif q == 2:
+            return ang + 180
+        else:
+            return ang - 180
+
+    def EffectiveValue(self):
+        return self
+
+    def compliment(self):
+        return Complex(self.real, -self.imag, 0)
+
+
 zero = Complex(0, 0, 0)
 one = Complex(1, 0, 0)
 
 
 class expression:
-	
-	def __init__(self, name, c, k):
-		self.varName = name
-		self.coef = c
-		self.const = k.EffectiveValue()
-		self.divider = one
 
-	def EffectiveValue(self):
-		#if isinstance(self.coef, Complex):
-		#	return self if self.coef != Complex(0, 0) else self.const.EffectiveValue()
-		if self.coef.EffectiveValue() == zero:
-			return self.const.EffectiveValue()
-		return self
+    def __init__(self, name, c, k):
+        self.varName = name
+        self.coef = c
+        self.const = k.EffectiveValue()
 
+    def EffectiveValue(self):
+        # if isinstance(self.coef, Complex):
+        #	return self if self.coef != Complex(0, 0) else self.const.EffectiveValue()
+        if self.coef.EffectiveValue() == zero:
+            return self.const.EffectiveValue()
+        return self
 
-	def __str__(self):
-		#if self.coef == Complex(0, 0):  # or str(self.coef) == "{0}":
-		#	return "{" + str(self.const) + "}"
-		self = self.EffectiveValue()
-		if isinstance(self, expression):
-			return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
-		return str(self)
+    def __str__(self):
+        # if self.coef == Complex(0, 0):  # or str(self.coef) == "{0}":
+        #	return "{" + str(self.const) + "}"
+        self = self.EffectiveValue()
+        if isinstance(self, expression):
+            return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
+        return str(self)
 
-	def __eq__(self, other):
-		self = self.EffectiveValue()
-		other = other.EffectiveValue()
-		if isinstance(other, expression) and isinstance(self, expression):
-			return self.coef == other.coef and self.const == other.const and self.varName == self.varName
-		return self == other
-	# double check
-	def __ne__(self, other):
-		return not self == other
-	
-	def __add__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			if self.varName == other.varName:
-				return expression(self.varName, self.coef + other.coef, self.const + other.const).EffectiveValue()
-		return expression(self.varName, self.coef, self.const + other).EffectiveValue()
+    def __eq__(self, other):
+        self = self.EffectiveValue()
+        other = other.EffectiveValue()
+        if isinstance(other, expression) and isinstance(self, expression):
+            return self.coef == other.coef and self.const == other.const and self.varName == self.varName
+        return self == other
 
-	def __sub__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			if self.varName == other.varName:
-				return expression(self.varName, self.coef - other.coef, self.const - other.const).EffectiveValue()
-		return expression(self.varName, self.coef, self.const - other).EffectiveValue()
+    # double check
+    def __ne__(self, other):
+        return not self == other
 
-	def __mul__(self, other):
-		other = other.EffectiveValue()
-		return expression(self.varName, self.coef * other, self.const * other).EffectiveValue()
-	
-	def __truediv__(self, other):
-		other = other.EffectiveValue()
-		if isinstance(other, expression):
-			res = self+zero
-			res.divider = other * res.divider
-		else:
-			res = expression(self.varName, self.coef / other, self.const / other)
-		return res.EffectiveValue()
+    def __add__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, expression):
+            if self.varName == other.varName:
+                return expression(self.varName, self.coef + other.coef, self.const + other.const).EffectiveValue()
+        return expression(self.varName, self.coef, self.const + other).EffectiveValue()
 
-	def __pow__(self, other):
-		res = expression(self.varName, zero, one)
-		i = -1 if other >= 0 else 1
-		while other:
-			res = self * res if i == -1 else res / self
-			other += i
-		return res
-	def inc(self):
-		self.const += one
-		return self
+    def __sub__(self, other):
+        other = other.EffectiveValue()
+        if isinstance(other, expression):
+            if self.varName == other.varName:
+                return expression(self.varName, self.coef - other.coef, self.const - other.const).EffectiveValue()
+        return expression(self.varName, self.coef, self.const - other).EffectiveValue()
 
-	def __neg__(self):
-		return self*(-one)
+    def __mul__(self, other):
+        other = other.EffectiveValue()
+        return expression(self.varName, self.coef * other, self.const * other).EffectiveValue()
 
-	@staticmethod
-	def constant(c):
-		return expression("shouldn't be seen", zero, c)
-	
+    def __truediv__(self, other):
+
+        other = other.EffectiveValue()
+        """""""""
+        if isinstance(other, expression):
+            res = self+zero
+            res.divider = other * res.divider
+        else:
+        """""""""
+        res = expression(self.varName, self.coef / other, self.const / other)
+        return res.EffectiveValue()
+
+    def __pow__(self, other):
+        res = expression(self.varName, zero, one)
+        i = -1 if other >= 0 else 1
+        while other:
+            res = self * res if i == -1 else res / self
+            other += i
+        return res
+
+    def inc(self):
+        self.const += one
+        return self
+
+    def __neg__(self):
+        return self * (-one)
+
+    @staticmethod
+    def constant(c):
+        return expression("shouldn't be seen", zero, c)
+
 
 class BoxedExpr:
-	
-	def __init__(self, name, c, k):
-		self.expr = expression(name, c, k)
-	
-	def EffectiveValue(self):
-		self.expr = self.expr.EffectiveValue()
-		self.expr.divider = self.expr.divider.EffectiveValue()
-	
-		
-	
+
+    def __init__(self, num):
+        self.num = num
+        self.div = one
+
+    def EffectiveValue(self):
+        self.num = self.num.EffectiveValue()
+        self.div = self.div.EffectiveValue()
+        if isinstance(self.div, Complex) and self.div != one:
+            self.num = self.num / self.div
+            self.div = one
+        return self
+
+    def __str__(self):
+        self = self.EffectiveValue()
+        num = str(self.num)
+        if isinstance(self.div, expression):
+            div = str(self.div)
+            return num + "\n" + "-" * max(len(num), len(div)) + "\n" + div
+        else:
+            return num
+
+    def __neg__(self):
+        return 4
+
+    def __eq__(self, other):
+        self = self.EffectiveValue()
+        other = other.EffectiveValue()
+        return self.num == other.num and self.div == other.div
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __add__(self, other):
+        self = self.EffectiveValue()
+        if isinstance(other, Complex):
+            res = BoxedExpr(self.num + other)
+        else:
+            res = BoxedExpr(self.num + other.num)
+        return res
+
+    def __sub__(self, other):
+        if self.div == one:
+            return BoxedExpr(self.num - other.num)
+        else:
+            print("ERROR SUB")
+            return 67676767
+
+    def __mul__(self, other):
+        return BoxedExpr(self.num * other.num) / (self.div * other.div)
+
+    def __truediv__(self, other):
+        if isinstance(other, BoxedExpr):
+            res = BoxedExpr(self.num * other.div)
+            res.div = self.div * other.num
+        else:
+            res = BoxedExpr(self.num)
+            res.div = self.div * other
+        return res
+
+    def __pow__(self, other):
+        res = BoxedExpr(one)
+        i = -1 if other >= 0 else 1
+        while other:
+            res = self * res if i == -1 else res / self
+            other += i
+        return res
 
 
-z = Complex(0, 1, 0)
-x = Complex(0, 0, 0)
-y = Complex(1, 90, 1)
-v = expression("v", x, x)
-u = expression("u", v, z)
+j = Complex(0, 1, 0)
+v = expression("v", zero, zero)
+u = expression("u", v, j)
 a = expression("a", one, zero)
+
+x = BoxedExpr(a)
 
 print(v)
 print(u)
 print(a)
 
-print(one / a)
+print(x / (x+one*3-x))
 
