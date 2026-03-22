@@ -4,12 +4,12 @@ import math
 class Complex:
 
     def __init__(self, a, b, p):
-        if not p:
+        if p == 0 or p == "0":
             self.real = float(a)
             self.imag = float(b)
         else:
-            self.real = a * round(math.cos(math.radians(b)), 5)
-            self.imag = a * math.sin(math.radians(b))
+            self.real = float(a) * round(math.cos(math.radians(float(b))), 5)
+            self.imag = float(a) * round(math.sin(math.radians(float(b))), 5)
 
     def __str__(self):
         if not self.imag:
@@ -281,16 +281,32 @@ class BoxedExpr:
         return res
 
 
-j = Complex(0, 1, 0)
-v = Expression("v", zero, zero)
-u = BoxedExpr(Expression("u", v, j))
-a = Expression("a", one, zero)
+def printm(l): # fix this
+    print()
+    for i in range(len(l)):
+        print(l[i])
+    print("\n")
 
-x = BoxedExpr(a)
 
-print(v)
-print(u)
-print(a)
+def treatStr(s):
+    s = s.split(",")
+    if len(s) == 1:
+        res = BoxedExpr(Complex(s[0], 0, 0))
+    elif len(s) == 3:
+        res = BoxedExpr(Complex(s[0], s[1], s[2]))
+    elif len(s) == 4:
+        res = BoxedExpr(Expression(s[3],Complex(s[0], s[1], s[2]) , zero))
+    else:
+        res = BoxedExpr(Expression(s[3], Complex(s[0], s[1], s[2]), Complex(s[4], s[5], s[6])))
+    return res
 
-print(x*zero)
+def getMatrix():
+    n = int(input("Num of equations : "))
+    m = [[0] * n] * (n + 1)
+    for j in range(n):
+        for i in range(n + 1):
+            m[i][j] = treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : "))
+    return m
 
+
+printm(getMatrix())
