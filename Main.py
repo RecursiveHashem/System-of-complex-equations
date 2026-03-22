@@ -281,10 +281,17 @@ class BoxedExpr:
         return res
 
 
-def printm(l): # fix this
+def printl(l):
+    s = "["
+    for i in l:
+        s += " " + str(i) + ","
+    s = s[:-1] + " ]"
+    print(s)
+
+def printm(m): # fix this
     print()
-    for i in range(len(l)):
-        print(l[i])
+    for i in range(len(m)):
+        printl(m[i])
     print("\n")
 
 
