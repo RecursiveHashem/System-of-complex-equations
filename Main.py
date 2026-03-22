@@ -32,8 +32,10 @@ class Complex:
         return not self == other
 
     def __add__(self, other):
+        if isinstance(other, int):
+            return Complex(self.real + other, self.imag, 0)
         other = other.EffectiveValue()
-        if isinstance(other, expression):
+        if isinstance(other, Expression):
             return (other + self).EffectiveValue()
         if isinstance(other, Complex):
             r = self.real + other.real
@@ -44,8 +46,10 @@ class Complex:
         return Complex(r, i, 0)
 
     def __sub__(self, other):
+        if isinstance(other, int):
+            return Complex(self.real - other, self.imag, 0)
         other = other.EffectiveValue()
-        if isinstance(other, expression):
+        if isinstance(other, Expression):
             return (-one * other) + self
         if isinstance(other, Complex):
             r = self.real - other.real
@@ -56,8 +60,10 @@ class Complex:
         return Complex(r, i, 0)
 
     def __mul__(self, other):
+        if isinstance(other, int):
+            return Complex(self.real * other, self.imag * other, 0)
         other = other.EffectiveValue()
-        if isinstance(other, expression):
+        if isinstance(other, Expression):
             return other * self
         if isinstance(other, Complex):
             r = self.real * other.real - (self.imag * other.imag)
@@ -68,9 +74,11 @@ class Complex:
         return Complex(r, i, 0)
 
     def __truediv__(self, other):
+        if isinstance(other, int):
+            return Complex(self.real / other, self.imag / other, 0)
         other = other.EffectiveValue()
-        if isinstance(other, expression):
-            return (expression.constant(self) / other).EffectiveValue()  # double check
+        if isinstance(other, Expression):
+            return (Expression.constant(self) / other).EffectiveValue()  # double check
         if isinstance(other, Complex):
             r = other.real / (other.real ** 2 + other.imag ** 2)
             i = -other.imag / (other.real ** 2 + other.imag ** 2)
@@ -117,7 +125,7 @@ zero = Complex(0, 0, 0)
 one = Complex(1, 0, 0)
 
 
-class expression:
+class Expression:
 
     def __init__(self, name, c, k):
         self.varName = name
@@ -135,14 +143,14 @@ class expression:
         # if self.coef == Complex(0, 0):  # or str(self.coef) == "{0}":
         #	return "{" + str(self.const) + "}"
         self = self.EffectiveValue()
-        if isinstance(self, expression):
+        if isinstance(self, Expression):
             return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
         return str(self)
 
     def __eq__(self, other):
         self = self.EffectiveValue()
         other = other.EffectiveValue()
-        if isinstance(other, expression) and isinstance(self, expression):
+        if isinstance(other, Expression) and isinstance(self, Expression):
             return self.coef == other.coef and self.const == other.const and self.varName == self.varName
         return self == other
 
@@ -152,21 +160,21 @@ class expression:
 
     def __add__(self, other):
         other = other.EffectiveValue()
-        if isinstance(other, expression):
+        if isinstance(other, Expression):
             if self.varName == other.varName:
-                return expression(self.varName, self.coef + other.coef, self.const + other.const).EffectiveValue()
-        return expression(self.varName, self.coef, self.const + other).EffectiveValue()
+                return Expression(self.varName, self.coef + other.coef, self.const + other.const).EffectiveValue()
+        return Expression(self.varName, self.coef, self.const + other).EffectiveValue()
 
     def __sub__(self, other):
         other = other.EffectiveValue()
-        if isinstance(other, expression):
+        if isinstance(other, Expression):
             if self.varName == other.varName:
-                return expression(self.varName, self.coef - other.coef, self.const - other.const).EffectiveValue()
-        return expression(self.varName, self.coef, self.const - other).EffectiveValue()
+                return Expression(self.varName, self.coef - other.coef, self.const - other.const).EffectiveValue()
+        return Expression(self.varName, self.coef, self.const - other).EffectiveValue()
 
     def __mul__(self, other):
         other = other.EffectiveValue()
-        return expression(self.varName, self.coef * other, self.const * other).EffectiveValue()
+        return Expression(self.varName, self.coef * other, self.const * other).EffectiveValue()
 
     def __truediv__(self, other):
 
@@ -177,11 +185,11 @@ class expression:
             res.divider = other * res.divider
         else:
         """""""""
-        res = expression(self.varName, self.coef / other, self.const / other)
+        res = Expression(self.varName, self.coef / other, self.const / other)
         return res.EffectiveValue()
 
     def __pow__(self, other):
-        res = expression(self.varName, zero, one)
+        res = Expression(self.varName, zero, one)
         i = -1 if other >= 0 else 1
         while other:
             res = self * res if i == -1 else res / self
@@ -197,7 +205,7 @@ class expression:
 
     @staticmethod
     def constant(c):
-        return expression("shouldn't be seen", zero, c)
+        return Expression("shouldn't be seen", zero, c)
 
 
 class BoxedExpr:
@@ -217,7 +225,7 @@ class BoxedExpr:
     def __str__(self):
         self = self.EffectiveValue()
         num = str(self.num)
-        if isinstance(self.div, expression):
+        if isinstance(self.div, Expression):
             div = str(self.div)
             return num + "\n" + "-" * max(len(num), len(div)) + "\n" + div
         else:
@@ -235,22 +243,25 @@ class BoxedExpr:
         return not self == other
 
     def __add__(self, other):
-        self = self.EffectiveValue()
-        if isinstance(other, Complex):
+        other = other.EffectiveValue()
+        if not isinstance(other, BoxedExpr):
             res = BoxedExpr(self.num + other)
         else:
             res = BoxedExpr(self.num + other.num)
-        return res
+        return res.EffectiveValue()
 
     def __sub__(self, other):
-        if self.div == one:
-            return BoxedExpr(self.num - other.num)
+        other = other.EffectiveValue()
+        if not isinstance(other, BoxedExpr):
+            res = BoxedExpr(self.num - other)
         else:
-            print("ERROR SUB")
-            return 67676767
+            res = BoxedExpr(self.num - other.num)
+        return res.EffectiveValue()
 
     def __mul__(self, other):
-        return BoxedExpr(self.num * other.num) / (self.div * other.div)
+        if isinstance(other, BoxedExpr):
+            return (BoxedExpr(self.num * other.num) / (self.div * other.div)).EffectiveValue()
+        return (BoxedExpr(self.num * other) / self.div).EffectiveValue()
 
     def __truediv__(self, other):
         if isinstance(other, BoxedExpr):
@@ -259,7 +270,7 @@ class BoxedExpr:
         else:
             res = BoxedExpr(self.num)
             res.div = self.div * other
-        return res
+        return res.EffectiveValue()
 
     def __pow__(self, other):
         res = BoxedExpr(one)
@@ -271,9 +282,9 @@ class BoxedExpr:
 
 
 j = Complex(0, 1, 0)
-v = expression("v", zero, zero)
-u = expression("u", v, j)
-a = expression("a", one, zero)
+v = Expression("v", zero, zero)
+u = BoxedExpr(Expression("u", v, j))
+a = Expression("a", one, zero)
 
 x = BoxedExpr(a)
 
@@ -281,5 +292,5 @@ print(v)
 print(u)
 print(a)
 
-print(x / (x+one*3-x))
+print(x*zero)
 
