@@ -152,7 +152,9 @@ class Expression:
         other = other.EffectiveValue()
         if isinstance(other, Expression) and isinstance(self, Expression):
             return self.coef == other.coef and self.const == other.const and self.varName == self.varName
-        return self == other
+        if isinstance(other, Complex) and isinstance(self, Complex):
+            return self == other
+        return False
 
     # double check
     def __ne__(self, other):
@@ -382,7 +384,7 @@ def solve(m):
 
 
 
-print(bettertreatStr("1,2,0,x+1,5,0,e+12,34,0"))
+#print(bettertreatStr("1,2,0,x+1,5,0,e+12,34,0"))
 
 M = getMatrix()
 
@@ -391,6 +393,10 @@ M = [[2, 3, 4],
      [1, 2, -2],
      [-1, 2, 3],
      [1, 13, 9]]
-"""""""""
 
+M = [[BoxedExpr(Expression("a11",one,zero)*Expression("z11",one,zero)), BoxedExpr(Expression("a12",one,zero)*Expression("z12",one,zero)), BoxedExpr(Expression("a13",one,zero)*Expression("z13",one,zero))],
+     [BoxedExpr(Expression("a21",one,zero)*Expression("z21",one,zero)), BoxedExpr(Expression("a22",one,zero)*Expression("z22",one,zero)), BoxedExpr(Expression("a23",one,zero)*Expression("z23",one,zero))],
+     [BoxedExpr(Expression("a31",one,zero)*Expression("z31",one,zero)), BoxedExpr(Expression("a32",one,zero)*Expression("z32",one,zero)), BoxedExpr(Expression("a33",one,zero)*Expression("z33",one,zero))],
+     [BoxedExpr(Expression("a41",one,zero)*Expression("z41",one,zero)), BoxedExpr(Expression("a42",one,zero)*Expression("z42",one,zero)), BoxedExpr(Expression("a43",one,zero)*Expression("z43",one,zero))]]
+"""""""""
 solve(M)
