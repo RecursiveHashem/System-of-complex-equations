@@ -308,6 +308,12 @@ def treatStr(s):
         res = BoxedExpr(Expression(s[3], Complex(s[0], s[1], s[2]), Complex(s[4], s[5], s[6])))
     return res
 
+def bettertreatStr(s):
+    s = s.split("+")
+    summ = BoxedExpr(zero)
+    for i in s:
+        summ = summ + treatStr(i)
+    return summ
 
 def getMatrix():
     n = int(input("Num of equations : "))
@@ -318,7 +324,7 @@ def getMatrix():
     for j in range(n):
         for i in range(n + 1):
             # m[i][j] = treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : "))
-            m[i].append(treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : ")))
+            m[i].append(bettertreatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : ")))
             # printm(m)
     return m
 
@@ -374,6 +380,9 @@ def solve(m):
         print(str(i + 1), ":", str(res[i]), "\n --> ", str(res[i]/W) + "\n")
     return res
 
+
+
+print(bettertreatStr("1,2,0,x+1,5,0,e+12,34,0"))
 
 M = getMatrix()
 
