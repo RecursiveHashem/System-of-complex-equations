@@ -312,7 +312,7 @@ def treatStr(s):
 def getMatrix():
     n = int(input("Num of equations : "))
     m = []
-    printm(m)
+    #printm(m)
     for j in range(n + 1):
         m.append([])
     for j in range(n):
@@ -340,6 +340,7 @@ def excludecol(m, col):
                 new[i].append(m[i][j])
     return new
 
+
 def exclude(m, row, col):
     return excludecol(excluderow(m, row), col)
 
@@ -350,18 +351,37 @@ def det(m):
     res = BoxedExpr(zero)
     alt = True
     for i in range(len(m)):
-        res = (res + m[0][i]*det(exclude(m, 0, i))) if alt else (res - m[0][i]*det(exclude(m, 0, i)))
+        res = (res + m[0][i] * det(exclude(m, 0, i))) if alt else (res - m[0][i] * det(exclude(m, 0, i)))
         alt = not alt
     return res
 
+
+def replacewithlast(m, row):
+    new = excluderow(m, len(m) - 1)
+    new[row] = m[len(m) - 1]
+    return new
+
+
+def solve(m):
+    W = det(excluderow(m, len(m) - 1))
+    print("\nW :", str(W) + "\n")
+    res = []
+    for i in range(len(m) - 1):
+        temp = det(replacewithlast(m, i))
+
+        res.append(temp)
+    for i in range(len(res)):
+        print(str(i + 1), ":", str(res[i]), "\n --> ", str(res[i]/W) + "\n")
+    return res
+
+
 M = getMatrix()
+
 """""""""
-M = [[ 1.0, 5.0, 9.0 ],
-[ 2.0, 6.0, 10.0 ],
-[ 3.0, 7.0, 11.0 ],
-[ 4.0, 8.0, 12.0 ]]
+M = [[2, 3, 4],
+     [1, 2, -2],
+     [-1, 2, 3],
+     [1, 13, 9]]
 """""""""
 
-# printm(exclude(M, 0, 0))
-# printm(M)
-#print(det(excluderow(M,0)))
+solve(M)
