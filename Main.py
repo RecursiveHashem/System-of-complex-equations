@@ -288,7 +288,8 @@ def printl(l):
     s = s[:-1] + " ]"
     print(s)
 
-def printm(m): # fix this
+
+def printm(m):
     print()
     for i in range(len(m)):
         printl(m[i])
@@ -302,18 +303,65 @@ def treatStr(s):
     elif len(s) == 3:
         res = BoxedExpr(Complex(s[0], s[1], s[2]))
     elif len(s) == 4:
-        res = BoxedExpr(Expression(s[3],Complex(s[0], s[1], s[2]) , zero))
+        res = BoxedExpr(Expression(s[3], Complex(s[0], s[1], s[2]), zero))
     else:
         res = BoxedExpr(Expression(s[3], Complex(s[0], s[1], s[2]), Complex(s[4], s[5], s[6])))
     return res
 
+
 def getMatrix():
     n = int(input("Num of equations : "))
-    m = [[0] * n] * (n + 1)
+    m = []
+    printm(m)
+    for j in range(n + 1):
+        m.append([])
     for j in range(n):
         for i in range(n + 1):
-            m[i][j] = treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : "))
+            # m[i][j] = treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : "))
+            m[i].append(treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : ")))
+            # printm(m)
     return m
 
 
-printm(getMatrix())
+def excluderow(m, row):
+    new = []
+    for i in range(len(m)):
+        if i != row:
+            new.append(m[i])
+    return new
+
+
+def excludecol(m, col):
+    new = []
+    for i in range(len(m)):
+        new.append([])
+        for j in range(len(m[i])):
+            if j != col:
+                new[i].append(m[i][j])
+    return new
+
+def exclude(m, row, col):
+    return excludecol(excluderow(m, row), col)
+
+
+def det(m):
+    if len(m) == 2:
+        return (m[0][0] * m[1][1]) - (m[0][1] * m[1][0])
+    res = BoxedExpr(zero)
+    alt = True
+    for i in range(len(m)):
+        res = (res + m[0][i]*det(exclude(m, 0, i))) if alt else (res - m[0][i]*det(exclude(m, 0, i)))
+        alt = not alt
+    return res
+
+M = getMatrix()
+"""""""""
+M = [[ 1.0, 5.0, 9.0 ],
+[ 2.0, 6.0, 10.0 ],
+[ 3.0, 7.0, 11.0 ],
+[ 4.0, 8.0, 12.0 ]]
+"""""""""
+
+# printm(exclude(M, 0, 0))
+# printm(M)
+#print(det(excluderow(M,0)))
