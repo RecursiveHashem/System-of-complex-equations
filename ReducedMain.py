@@ -168,7 +168,7 @@ def det(m):
     res = zero
     alt = True
     for i in range(len(m)):
-        res = (res + m[0][i] * det(exclude(m, 0, i))) if alt else (res - m[0][i] * det(exclude(m, 0, i)))
+        res = (res - m[0][i] *Complex(-1) * det(exclude(m, 0, i))) if alt else (res - m[0][i] * det(exclude(m, 0, i)))
         alt = not alt
     return res
 

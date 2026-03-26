@@ -1,4 +1,4 @@
-
+import math
 def contains(s, char):
     s = str(s)
     for i in s:
@@ -8,9 +8,13 @@ def contains(s, char):
 
 class Complex:
 
-    def __init__(self, a=0, b=0):
-        self.real = float(a) if contains(a, ".") else int(a)
-        self.imag = float(b) if contains(b, ".") else int(b)
+    def __init__(self, a=0, b=0, p=0):
+        if p == 0 or p == "0":
+            self.real = float(a) if contains(a, ".") else int(a)
+            self.imag = float(b) if contains(b, ".") else int(b)
+        else:
+            self.real = float(a) * round(math.cos(math.radians(float(b))), 5)
+            self.imag = float(a) * round(math.sin(math.radians(float(b))), 5)
 
     def __str__(self):
         if not self.imag:
@@ -20,26 +24,26 @@ class Complex:
         else:
             return "( " + str(self.real) + " + " + "j" + str(self.imag) + " )"
 
-    def __sub__(self, other):
+    def subt(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real - other, self.imag)
         r = self.real - other.real
         i = self.imag - other.imag
         return Complex(r, i)
 
-    def __mul__(self, other):
+    def mult(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real * other, self.imag * other)
         r = self.real * other.real - (self.imag * other.imag)
         i = self.real * other.imag + (self.imag * other.real)
         return Complex(r, i)
 
-    def __truediv__(self, other):
+    def div(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real / other, self.imag / other)
         r = other.real / (other.real ** 2 + other.imag ** 2)
         i = -other.imag / (other.real ** 2 + other.imag ** 2)
-        return self * Complex(r, i)
+        return self.mult( Complex(r, i))
 
 
 def printl(l):
@@ -61,8 +65,9 @@ def treatStr(s):
     s = s.split(",")
     if len(s) == 1:
         return Complex(s[0])
-    return Complex(s[0], s[1])
-
+    if len(s) == 2:
+        return Complex(s[0], s[1])
+    return Complex(s[0], s[1], s[2])
 
 def getMatrix():
     n = int(input("Num of equations : "))
@@ -98,11 +103,11 @@ def exclude(m, row, col):
 
 def det(m):
     if len(m) == 2:
-        return (m[0][0] * m[1][1]) - (m[0][1] * m[1][0])
+        return (m[0][0].mult(m[1][1])).subt((m[0][1].mult(m[1][0])))
     res = Complex()
     alt = True
     for i in range(len(m)):
-        res = (res + m[0][i] * det(exclude(m, 0, i))) if alt else (res - m[0][i] * det(exclude(m, 0, i)))
+        res = (res.subt(m[0][i].mult(Complex(-1).mult(det(exclude(m, 0, i)))))) if alt else (res.subt(m[0][i].mult(det(exclude(m, 0, i)))))
         alt = not alt
     return res
 
@@ -119,9 +124,7 @@ def solve(m):
         temp = det(replacewithlast(m, i))
         res.append(temp)
     for i in range(len(res)):
-        final = str(res[i]/W)
+        final = str(res[i].div(W))
         print(str(i + 1), ":", str(res[i]), "\n --> ", final + "\n")
 
-
-M = getMatrix()
-solve(M)
+solve(getMatrix())
