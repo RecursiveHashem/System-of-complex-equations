@@ -8,7 +8,6 @@ def contains(s, char):
 
 class Complex:
 
-
     def __init__(self, a=0, b=0):
         self.real = float(a) if contains(a, ".") else int(a)
         self.imag = float(b) if contains(b, ".") else int(b)
@@ -34,12 +33,8 @@ class Complex:
         other = other.EffectiveValue()
         if isinstance(other, Expression):
             return (Complex(-1) * other) + self
-        if isinstance(other, Complex):
-            r = self.real - other.real
-            i = self.imag - other.imag
-        else:
-            r = self.real - other
-            i = self.imag
+        r = self.real - other.real
+        i = self.imag - other.imag
         return Complex(r, i)
 
     def __mul__(self, other):
@@ -48,27 +43,17 @@ class Complex:
         other = other.EffectiveValue()
         if isinstance(other, Expression):
             return other * self
-        if isinstance(other, Complex):
-            r = self.real * other.real - (self.imag * other.imag)
-            i = self.real * other.imag + (self.imag * other.real)
-        else:
-            r = self.real * other
-            i = self.imag * other
+        r = self.real * other.real - (self.imag * other.imag)
+        i = self.real * other.imag + (self.imag * other.real)
         return Complex(r, i)
 
     def __truediv__(self, other):
         if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real / other, self.imag / other)
         other = other.EffectiveValue()
-        if isinstance(other, Expression):
-            return (Expression.constant(self) / other).EffectiveValue()  # double check
-        if isinstance(other, Complex):
-            r = other.real / (other.real ** 2 + other.imag ** 2)
-            i = -other.imag / (other.real ** 2 + other.imag ** 2)
-            res = self * Complex(r, i)
-        else:
-            res = Complex(self.real / other, self.imag / other)
-        return res
+        r = other.real / (other.real ** 2 + other.imag ** 2)
+        i = -other.imag / (other.real ** 2 + other.imag ** 2)
+        return self * Complex(r, i)
 
     def EffectiveValue(self):
         return self
@@ -96,8 +81,6 @@ class Expression:
         if isinstance(self, Expression):
             return "[" + str(self.coef) + "]" + str(self.varName) + " + {" + str(self.const) + "}"
         return str(self)
-
-
 
     def __sub__(self, other):
         other = other.EffectiveValue()
@@ -132,14 +115,13 @@ def printm(m):
 def treatStr(s):
     s = s.split(",")
     if len(s) == 1:
-        res = Complex(s[0])
-    elif len(s) == 2:
-        res = Complex(s[0], s[1])
-    elif len(s) == 3:
-        res = Expression(s[2], Complex(s[0], s[1]))
-    else:
-        res = Expression(s[2], Complex(s[0], s[1]), Complex(s[3], s[4]))
-    return res
+        return Complex(s[0])
+    if len(s) == 2:
+        return Complex(s[0], s[1])
+    if len(s) == 3:
+        return Expression(s[2], Complex(s[0], s[1]))
+    return Expression(s[2], Complex(s[0], s[1]), Complex(s[3], s[4]))
+
 
 def bettertreatStr(s):
     s = s.split("+")
@@ -180,7 +162,6 @@ def excludecol(m, col):
 def exclude(m, row, col):
     return excludecol(excluderow(m, row), col)
 
-
 def det(m):
     if len(m) == 2:
         return (m[0][0] * m[1][1]) - (m[0][1] * m[1][0])
@@ -191,12 +172,10 @@ def det(m):
         alt = not alt
     return res
 
-
 def replacewithlast(m, row):
     new = excluderow(m, len(m) - 1)
     new[row] = m[len(m) - 1]
     return new
-
 
 def solve(m):
     W = det(excluderow(m, len(m) - 1))
@@ -210,17 +189,5 @@ def solve(m):
         print(str(i + 1), ":", str(res[i]), "\n --> ", final + "\n")
     return res
 
-
-
-#print(bettertreatStr("1,20,x+1,5,0e+12,34"))
-
 M = getMatrix()
-
-
-"""""""""
-M = [[Complex(1), Complex(2)],
-     [Complex(2), Complex(0)],
-     [bettertreatStr("1,20,x+1,5,0e+12,34"), Complex(7)]]
-"""""""""
-
 solve(M)
