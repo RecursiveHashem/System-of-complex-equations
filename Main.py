@@ -1,15 +1,23 @@
-#import math
+import math
 
+
+def contains(s, char):
+    s = str(s)
+    for i in s:
+        if i == char:
+            return True
+    return False
 
 class Complex:
 
-    def __init__(self, a, b):
-        #if p == 0 or p == "0":
-         self.real = float(a)
-         self.imag = float(b)
-        #else:
-        #    self.real = float(a) * round(math.cos(math.radians(float(b))), 5)
-        #    self.imag = float(a) * round(math.sin(math.radians(float(b))), 5)
+
+    def __init__(self, a=0, b=0, p=0):
+        if p == 0 or p == "0":
+            self.real = float(a) if contains(a, ".") else int(a)
+            self.imag = float(b) if contains(b, ".") else int(b)
+        else:
+            self.real = float(a) * round(math.cos(math.radians(float(b))), 5)
+            self.imag = float(a) * round(math.sin(math.radians(float(b))), 5)
 
     def __str__(self):
         if not self.imag:
@@ -46,7 +54,7 @@ class Complex:
         return Complex(r, i)
 
     def __sub__(self, other):
-        if isinstance(other, int):
+        if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real - other, self.imag)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
@@ -60,7 +68,7 @@ class Complex:
         return Complex(r, i)
 
     def __mul__(self, other):
-        if isinstance(other, int):
+        if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real * other, self.imag * other)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
@@ -74,7 +82,7 @@ class Complex:
         return Complex(r, i)
 
     def __truediv__(self, other):
-        if isinstance(other, int):
+        if isinstance(other, int) or isinstance(other, float):
             return Complex(self.real / other, self.imag / other)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
@@ -95,8 +103,8 @@ class Complex:
             other += i
         return res
 
-    #def abs(self):
-    #    return math.sqrt(self.real ** 2 + self.imag ** 2)
+    def abs(self):
+        return math.sqrt(self.real ** 2 + self.imag ** 2)
 
     def quad(self):
         if self.real >= 0:
@@ -104,7 +112,7 @@ class Complex:
         else:
             return 2 if self.imag >= 0 else 3
 
-    """""""""
+
     def angle(self):
         ang = math.degrees(math.atan(self.imag / self.real))
         q = self.quad()
@@ -114,7 +122,7 @@ class Complex:
             return ang + 180
         else:
             return ang - 180
-    """""""""
+
     def EffectiveValue(self):
         return self
 
@@ -128,7 +136,7 @@ one = Complex(1, 0)
 
 class Expression:
 
-    def __init__(self, name, c, k):
+    def __init__(self, name, c=one, k=zero):
         self.varName = name
         self.coef = c
         self.const = k.EffectiveValue()
@@ -213,9 +221,9 @@ class Expression:
 
 class BoxedExpr:
 
-    def __init__(self, num):
+    def __init__(self, num=zero, div=one):
         self.num = num
-        self.div = one
+        self.div = div
 
     def EffectiveValue(self):
         self.num = self.num.EffectiveValue()
@@ -377,7 +385,6 @@ def solve(m):
     res = []
     for i in range(len(m) - 1):
         temp = det(replacewithlast(m, i))
-
         res.append(temp)
     for i in range(len(res)):
         print(str(i + 1), ":", str(res[i]), "\n --> ", str(res[i]/W) + "\n")
