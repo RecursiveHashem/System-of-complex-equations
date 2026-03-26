@@ -32,7 +32,7 @@ class Complex:
             return Complex(self.real - other, self.imag)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
-            return (Complex(-1) * other) + self
+            return (Complex(-1) * other) - self*Complex(-1)
         r = self.real - other.real
         i = self.imag - other.imag
         return Complex(r, i)
@@ -127,8 +127,8 @@ def bettertreatStr(s):
     s = s.split("+")
     summ = zero
     for i in s:
-        summ = summ + treatStr(i)
-    return summ
+        summ = summ - treatStr(i)
+    return summ*Complex(-1)
 
 def getMatrix():
     n = int(input("Num of equations : "))

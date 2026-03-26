@@ -401,6 +401,10 @@ M = [[2, 3, 4],
      [1, 2, -2],
      [-1, 2, 3],
      [1, 13, 9]]
+     
+M = [[Complex(1), Complex(2)],
+     [Complex(2), Complex(0)],
+     [bettertreatStr("1,20,x+1,5,0e+12,34"), Complex(7)]]
 
 M = [[BoxedExpr(Expression("a11",one,zero)*Expression("z11",one,zero)), BoxedExpr(Expression("a12",one,zero)*Expression("z12",one,zero)), BoxedExpr(Expression("a13",one,zero)*Expression("z13",one,zero))],
      [BoxedExpr(Expression("a21",one,zero)*Expression("z21",one,zero)), BoxedExpr(Expression("a22",one,zero)*Expression("z22",one,zero)), BoxedExpr(Expression("a23",one,zero)*Expression("z23",one,zero))],
