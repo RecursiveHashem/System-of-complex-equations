@@ -60,19 +60,18 @@ class Complex:
 
 
 
-zero = Complex()
-one = Complex(1)
+
 
 
 class Expression:
 
-    def __init__(self, name, c=one, k=zero):
+    def __init__(self, name, c=Complex(1), k=Complex()):
         self.varName = name
         self.coef = c
         self.const = k.EffectiveValue()
 
     def EffectiveValue(self):
-        if self.coef.EffectiveValue() == zero:
+        if self.coef.EffectiveValue() == Complex():
             return self.const.EffectiveValue()
         return self
 
@@ -125,7 +124,7 @@ def treatStr(s):
 
 def bettertreatStr(s):
     s = s.split("+")
-    summ = zero
+    summ = Complex()
     for i in s:
         summ = summ - treatStr(i)
     return summ*Complex(-1)
@@ -140,32 +139,24 @@ def getMatrix():
             m[i].append(bettertreatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : ")))
     return m
 
-
-def excluderow(m, row):
+def exclude(m, row=-1, col=-1):
+    #return excludecol(excluderow(m, row), col)
     new = []
-    for i in range(len(m)):
-        if i != row:
-            new.append(m[i])
+    if row != -1:
+        for i in range(len(m)):
+            if i != row:
+                new.append(m[i])
+    if col != -1:
+        for i in range(len(m)):
+            new.append([])
+            for j in range(len(m[i])):
+                if j != col:
+                    new[i].append(m[i][j])
     return new
-
-
-def excludecol(m, col):
-    new = []
-    for i in range(len(m)):
-        new.append([])
-        for j in range(len(m[i])):
-            if j != col:
-                new[i].append(m[i][j])
-    return new
-
-
-def exclude(m, row, col):
-    return excludecol(excluderow(m, row), col)
-
 def det(m):
     if len(m) == 2:
         return (m[0][0] * m[1][1]) - (m[0][1] * m[1][0])
-    res = zero
+    res = Complex()
     alt = True
     for i in range(len(m)):
         res = (res + m[0][i] * det(exclude(m, 0, i))) if alt else (res - m[0][i] * det(exclude(m, 0, i)))
@@ -173,12 +164,12 @@ def det(m):
     return res
 
 def replacewithlast(m, row):
-    new = excluderow(m, len(m) - 1)
+    new = exclude(m, len(m) - 1)
     new[row] = m[len(m) - 1]
     return new
 
 def solve(m):
-    W = det(excluderow(m, len(m) - 1))
+    W = det(exclude(m, len(m) - 1))
     print("\nW :", str(W) + "\n")
     res = []
     for i in range(len(m) - 1):
