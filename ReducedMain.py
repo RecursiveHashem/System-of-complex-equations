@@ -177,6 +177,8 @@ def replacewithlast(m, row):
     new[row] = m[len(m) - 1]
     return new
 
+
+
 def solve(m):
     W = det(excluderow(m, len(m) - 1))
     print("\nW :", str(W) + "\n")
@@ -187,6 +189,7 @@ def solve(m):
     for i in range(len(res)):
         final = str(res[i]/W) if not isinstance(W, Expression) else str(res[i]) + "\n" + "-" * max(len(str(res[i])), len(str(W))) + "\n" + str(W)
         print(str(i + 1), ":", str(res[i]), "\n --> ", final + "\n")
+
 
 
 M = getMatrix()
