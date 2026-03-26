@@ -27,19 +27,6 @@ class Complex:
             return "( " + str(self.real) + " + " + "j" + str(self.imag) + " )"
 
 
-    def __add__(self, other):
-        if isinstance(other, int):
-            return Complex(self.real + other, self.imag)
-        other = other.EffectiveValue()
-        if isinstance(other, Expression):
-            return (other + self).EffectiveValue()
-        if isinstance(other, Complex):
-            r = self.real + other.real
-            i = self.imag + other.imag
-        else:
-            r = self.real + other
-            i = self.imag
-        return Complex(r, i)
 
     def __sub__(self, other):
         if isinstance(other, int) or isinstance(other, float):
@@ -83,10 +70,6 @@ class Complex:
             res = Complex(self.real / other, self.imag / other)
         return res
 
-
-
-
-
     def EffectiveValue(self):
         return self
 
@@ -115,13 +98,6 @@ class Expression:
         return str(self)
 
 
-
-    def __add__(self, other):
-        other = other.EffectiveValue()
-        if isinstance(other, Expression):
-            if self.varName == other.varName:
-                return Expression(self.varName, self.coef + other.coef, self.const + other.const).EffectiveValue()
-        return Expression(self.varName, self.coef, self.const + other).EffectiveValue()
 
     def __sub__(self, other):
         other = other.EffectiveValue()
