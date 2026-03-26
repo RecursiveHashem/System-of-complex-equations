@@ -1,15 +1,15 @@
-import math
+#import math
 
 
 class Complex:
 
-    def __init__(self, a, b, p):
-        if p == 0 or p == "0":
-            self.real = float(a)
-            self.imag = float(b)
-        else:
-            self.real = float(a) * round(math.cos(math.radians(float(b))), 5)
-            self.imag = float(a) * round(math.sin(math.radians(float(b))), 5)
+    def __init__(self, a, b):
+        #if p == 0 or p == "0":
+         self.real = float(a)
+         self.imag = float(b)
+        #else:
+        #    self.real = float(a) * round(math.cos(math.radians(float(b))), 5)
+        #    self.imag = float(a) * round(math.sin(math.radians(float(b))), 5)
 
     def __str__(self):
         if not self.imag:
@@ -20,7 +20,7 @@ class Complex:
             return "( " + str(self.real) + " + " + "j" + str(self.imag) + " )"
 
     def __neg__(self):
-        return Complex(-self.real, -self.imag, 0)
+        return Complex(-self.real, -self.imag)
 
     def __eq__(self, other):
         other = other.EffectiveValue()
@@ -33,7 +33,7 @@ class Complex:
 
     def __add__(self, other):
         if isinstance(other, int):
-            return Complex(self.real + other, self.imag, 0)
+            return Complex(self.real + other, self.imag)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
             return (other + self).EffectiveValue()
@@ -43,11 +43,11 @@ class Complex:
         else:
             r = self.real + other
             i = self.imag
-        return Complex(r, i, 0)
+        return Complex(r, i)
 
     def __sub__(self, other):
         if isinstance(other, int):
-            return Complex(self.real - other, self.imag, 0)
+            return Complex(self.real - other, self.imag)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
             return (-one * other) + self
@@ -57,11 +57,11 @@ class Complex:
         else:
             r = self.real - other
             i = self.imag
-        return Complex(r, i, 0)
+        return Complex(r, i)
 
     def __mul__(self, other):
         if isinstance(other, int):
-            return Complex(self.real * other, self.imag * other, 0)
+            return Complex(self.real * other, self.imag * other)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
             return other * self
@@ -71,20 +71,20 @@ class Complex:
         else:
             r = self.real * other
             i = self.imag * other
-        return Complex(r, i, 0)
+        return Complex(r, i)
 
     def __truediv__(self, other):
         if isinstance(other, int):
-            return Complex(self.real / other, self.imag / other, 0)
+            return Complex(self.real / other, self.imag / other)
         other = other.EffectiveValue()
         if isinstance(other, Expression):
             return (Expression.constant(self) / other).EffectiveValue()  # double check
         if isinstance(other, Complex):
             r = other.real / (other.real ** 2 + other.imag ** 2)
             i = -other.imag / (other.real ** 2 + other.imag ** 2)
-            res = self * Complex(r, i, 0)
+            res = self * Complex(r, i)
         else:
-            res = Complex(self.real / other, self.imag / other, 0)
+            res = Complex(self.real / other, self.imag / other)
         return res
 
     def __pow__(self, other):
@@ -95,8 +95,8 @@ class Complex:
             other += i
         return res
 
-    def abs(self):
-        return math.sqrt(self.real ** 2 + self.imag ** 2)
+    #def abs(self):
+    #    return math.sqrt(self.real ** 2 + self.imag ** 2)
 
     def quad(self):
         if self.real >= 0:
@@ -104,6 +104,7 @@ class Complex:
         else:
             return 2 if self.imag >= 0 else 3
 
+    """""""""
     def angle(self):
         ang = math.degrees(math.atan(self.imag / self.real))
         q = self.quad()
@@ -113,16 +114,16 @@ class Complex:
             return ang + 180
         else:
             return ang - 180
-
+    """""""""
     def EffectiveValue(self):
         return self
 
     def compliment(self):
-        return Complex(self.real, -self.imag, 0)
+        return Complex(self.real, -self.imag)
 
 
-zero = Complex(0, 0, 0)
-one = Complex(1, 0, 0)
+zero = Complex(0, 0)
+one = Complex(1, 0)
 
 
 class Expression:
@@ -301,13 +302,13 @@ def printm(m):
 def treatStr(s):
     s = s.split(",")
     if len(s) == 1:
-        res = BoxedExpr(Complex(s[0], 0, 0))
+        res = BoxedExpr(Complex(s[0], 0))
+    elif len(s) == 2:
+        res = BoxedExpr(Complex(s[0], s[1]))
     elif len(s) == 3:
-        res = BoxedExpr(Complex(s[0], s[1], s[2]))
-    elif len(s) == 4:
-        res = BoxedExpr(Expression(s[3], Complex(s[0], s[1], s[2]), zero))
+        res = BoxedExpr(Expression(s[2], Complex(s[0], s[1]), zero))
     else:
-        res = BoxedExpr(Expression(s[3], Complex(s[0], s[1], s[2]), Complex(s[4], s[5], s[6])))
+        res = BoxedExpr(Expression(s[2], Complex(s[0], s[1]), Complex(s[3], s[4])))
     return res
 
 def bettertreatStr(s):
