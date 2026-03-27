@@ -1,10 +1,3 @@
-def contains(s, char):
-    s = str(s)
-    for i in s:
-        if i == char:
-            return True
-    return False
-
 
 def EffectiveValue(self):
     if isinstance(self, tuple) or isinstance(self, list):
@@ -14,17 +7,6 @@ def EffectiveValue(self):
         if coef == [0, 0] or coef == (0, 0):
             return EffectiveValue(self[1])
     return self
-
-
-def areEqual(self, other):
-    other = EffectiveValue(other)
-    self = EffectiveValue(self)
-    equals = len(other) == len(self)
-    if equals:
-        for i in range(len(other)):
-            equals = self[i] == other[i] and equals
-    return equals
-
 
 def Display(self):
     self = EffectiveValue(self)
