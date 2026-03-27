@@ -61,8 +61,8 @@ def div(self, other):
     if len(other) == 2:
         return EffectiveValue((div(self[0], other), div(self[1], other), self[2]))
     if len(self) == 3:
-        return [self[0], self[1], self[2], other]
-    return [(0, 0), (self[0], self[1]), "Default", other]
+        return (self[0], self[1], self[2], other)
+    return ((0, 0), (self[0], self[1]), "Default", other)
 
 def printl(l):
     s = "["
@@ -87,8 +87,8 @@ def treatStr(s):
     if len(s) == 2:
         return (eval(s[0]), eval(s[1]))
     if len(s) == 3:
-        return [[eval(s[0]), eval(s[1])], [0, 0], s[2]]
-    return [[eval(s[0]), eval(s[1])], [eval(s[3]), eval(s[4])], s[2]]
+        return ((eval(s[0]), eval(s[1])), (0, 0), s[2])
+    return ((eval(s[0]), eval(s[1])), (eval(s[3]), eval(s[4])), s[2])
 
 
 def bettertreatStr(s):
