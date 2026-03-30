@@ -335,7 +335,7 @@ def getMatrix():
     for j in range(n):
         for i in range(n + 1):
             # m[i][j] = treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : "))
-            m[i].append(bettertreatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : ")))
+            m[i].append(bettertreatStr(input("( " + str(j + 1) + " , " + str(i + 1) + " ) : ")))
             # printm(m)
     return m
 

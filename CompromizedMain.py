@@ -76,7 +76,7 @@ def getMatrix():
         m.append([])
     for j in range(n):
         for i in range(n + 1):
-            m[i].append(treatStr(input("( " + str(i + 1) + " , " + str(j + 1) + " ) : ")))
+            m[i].append(treatStr(input("( " + str(j + 1) + " , " + str(i + 1) + " ) : ")))
     return m
 
 
